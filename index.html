@@ -440,7 +440,7 @@
     ).value;
 
     try {
-      const response = await fetch("http://localhost:4500/send", {
+      const response = await fetch("http://localhost:4500/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -477,3 +477,4 @@ submitBtn.addEventListener("click", () => {
     </html>
   </body>
 </html>
+
